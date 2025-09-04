@@ -12,7 +12,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Pickable
   - 
   - 
   - 
@@ -53,9 +53,6 @@ TagManager:
     locked: 0
   - name: Entities
     uniqueID: 318925305
-    locked: 0
-  - name: Foreground
-    uniqueID: 2216025979
     locked: 0
   m_RenderingLayers:
   - Default

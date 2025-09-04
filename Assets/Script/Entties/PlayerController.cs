@@ -6,8 +6,50 @@ public class PlayerController : MonoBehaviour
     private bool isBlocked = false;
     private float collisionTimer = 0f;
     public float speed = 3f;
+    public Transform holdingPoint;
+    public LayerMask pickableLayer;
+    public Vector3 Direction { get; set; }
+    private GameObject itemHolding;
 
     void Update()
+    {
+        ClicktoMove();
+        HoldingItem();
+    }
+
+    private void HoldingItem()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (itemHolding)
+            {
+                // Drop item in the facing direction
+                itemHolding.transform.position = transform.position + Direction;
+                itemHolding.transform.parent = null;
+
+                if (itemHolding.GetComponent<Rigidbody2D>())
+                    itemHolding.GetComponent<Rigidbody2D>().simulated = true;
+
+                itemHolding = null;
+            }
+            else
+            {
+                // Pickup item in front of player
+                Collider2D pickupItem = Physics2D.OverlapCircle(transform.position + Direction, 0.5f, pickableLayer);
+                if (pickupItem)
+                {
+                    itemHolding = pickupItem.gameObject;
+                    itemHolding.transform.position = holdingPoint.position;
+                    itemHolding.transform.parent = transform;
+
+                    if (itemHolding.GetComponent<Rigidbody2D>())
+                        itemHolding.GetComponent<Rigidbody2D>().simulated = false;
+                }
+            }
+        }
+    }
+
+    private void ClicktoMove()
     {
         // Detect left mouse click
         if (Input.GetMouseButtonDown(0))
@@ -36,6 +78,10 @@ public class PlayerController : MonoBehaviour
                 target = mousePosition;
             }
 
+            // Update Direction → normalized vector toward target
+            Vector2 dir = target - (Vector2)transform.position;
+            Direction = dir.normalized;
+
             // Reset movement block state
             isBlocked = false;
             collisionTimer = 0f;
@@ -48,7 +94,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Stop if colliding for more than 0.3s
+    // Stop if colliding for more than 0.1s
     private void OnCollisionStay2D(Collision2D collision)
     {
         if ((Vector2)transform.position != target)
