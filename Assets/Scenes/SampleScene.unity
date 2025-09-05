@@ -405,7 +405,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.04
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 00000000cba60aedd39e62602d288fb0f9690213
@@ -534,6 +534,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &873432873 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8168412239757944538, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+  m_PrefabInstance: {fileID: 4485521522769222988}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1251554386
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,6 +1013,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 185194090924749454, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: pickableTag
+      value: Interactable
+      objectReference: {fileID: 0}
+    - target: {fileID: 185194090924749454, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: flashlightObject
+      value: 
+      objectReference: {fileID: 873432873}
+    - target: {fileID: 185194090924749454, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: maxPickupDistance
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1380569380682515697, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.17
@@ -1063,6 +1080,30 @@ PrefabInstance:
     - target: {fileID: 3353602909919844299, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3552569959466460219, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_Intensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3552569959466460219, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3552569959466460219, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_PointLightOuterRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8327629391850014741, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856982682091518352, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856982682091518352, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
+      propertyPath: m_PointLightOuterAngle
+      value: 45
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -7106146916469998558, guid: ebfe092f92fb40c42b053b21ecddaa0c, type: 3}
