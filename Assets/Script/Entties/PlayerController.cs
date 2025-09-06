@@ -34,12 +34,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // ✅ Block all input while fading
+        if (FadeUI.Instance != null && FadeUI.Instance.IsFading)
+            return;
+
         ClicktoMove();
         HoldingItem();
         RotateFlashlight();
         UpdateVisibility();
-        UpdateFacingByCursor(); // ✅ NEW — face player & update animations
-    }
+        UpdateFacingByCursor();
+}
+
 
     // ✅ Check if object is currently visible
     public bool IsObjectVisible(GameObject obj)
@@ -210,6 +215,11 @@ public class PlayerController : MonoBehaviour
             if (collisionTimer >= 0.1f)
                 isBlocked = true;
         }
+    }
+    public void SetNewTarget(Vector3 newPosition)
+    {
+        target = newPosition; // Stop movement by setting target to current pos
+        isBlocked = false;    // Ensure no collision blocking state lingers
     }
 
     private void OnCollisionExit2D(Collision2D collision)

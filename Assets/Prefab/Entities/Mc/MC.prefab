@@ -152,6 +152,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   fadeSpeed: 15
+  bodyRenderer: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!50 &3323779024186938070
 Rigidbody2D:
   serializedVersion: 5
