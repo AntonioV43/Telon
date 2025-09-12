@@ -6,9 +6,9 @@ public class Tooltip : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        // ✅ Use FindFirstObjectByType instead of FindObjectOfType
-        PlayerController player = Object.FindFirstObjectByType<PlayerController>();
-        if (player != null && player.IsObjectVisible(gameObject))
+        // ✅ Use FindFirstObjectByType instead of deprecated FindObjectOfType
+        Flashlight flashlight = Object.FindFirstObjectByType<Flashlight>();
+        if (flashlight != null && flashlight.IsObjectVisible(gameObject))
         {
             ToooltipManager._Instance.ShowTooltip(text);
         }

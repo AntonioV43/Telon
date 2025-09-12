@@ -1,80 +1,65 @@
+using System.Collections;
 using UnityEngine;
 
 public class Teleport : MonoBehaviour
 {
     [Header("Teleport Targets")]
-    public Transform teleportPivot;  // Player teleport destination
-    public Transform cameraPivot;    // Camera teleport destination
+    public Transform playerPivot;   // Where the player will teleport
+    public Transform cameraPivot;   // Optional: where the camera will teleport
 
-    [Header("Interaction Settings")]
-    public KeyCode interactKey = KeyCode.F;
-
-    private bool isPlayerInside = false;
-    private Transform player;
-    private PlayerController playerController;
     private Camera mainCamera;
+    private bool isTeleporting = false;
 
     private void Start()
     {
-        // Cache main camera
         mainCamera = Camera.main;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerInside = true;
-            player = other.transform;
-            playerController = other.GetComponent<PlayerController>();
-        }
+        if (!other.CompareTag("Player")) return;
+        if (isTeleporting) return; // ignore if a teleport is already in progress
+
+        PlayerController playerController = other.GetComponent<PlayerController>();
+        StartCoroutine(TeleportCoroutine(other.transform, playerController));
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private IEnumerator TeleportCoroutine(Transform playerTransform, PlayerController playerController)
     {
-        if (other.CompareTag("Player"))
+        isTeleporting = true;
+
+        // If there's a FadeManager, use it (fade out -> teleport -> fade in)
+        if (FadeUI.Instance != null)
         {
-            isPlayerInside = false;
-            player = null;
-            playerController = null;
-
-            // Hide tooltip when leaving
-            ToooltipManager._Instance.HideTooltip();
-        }
-    }
-
-    private void Update()
-    {
-        if (!isPlayerInside) return;
-
-        // Always show tooltip when inside trigger
-        ToooltipManager._Instance.ShowTooltip("Press F to Teleport");
-
-        // Start teleport if F is pressed
-        if (Input.GetKeyDown(interactKey) && teleportPivot != null && player != null)
-        {
-            // Use FadeManager for smooth transition
-            if (FadeUI.Instance != null)
+            // FadeOutIn takes a callback executed between fade-out and fade-in
+            yield return StartCoroutine(FadeUI.Instance.FadeOutIn(() =>
             {
-                StartCoroutine(FadeUI.Instance.FadeOutIn(() =>
-                {
-                    DoTeleport();
-                }));
-            }
-            else
-            {
-                // Fallback: instant teleport if no FadeManager
-                DoTeleport();
-            }
+                DoTeleport(playerTransform, playerController);
+            }));
         }
+        else
+        {
+            // Fallback: instant teleport
+            DoTeleport(playerTransform, playerController);
+            yield return null;
+        }
+
+        isTeleporting = false;
     }
 
-    private void DoTeleport()
+        private void DoTeleport(Transform playerTransform, PlayerController playerController)
     {
-        // Move player
-        player.position = teleportPivot.position;
+        // Teleport player
+        if (playerPivot != null && playerTransform != null)
+        {
+            playerTransform.position = playerPivot.position;
 
-        // Move camera if pivot assigned
+            // ✅ Proper way: stop player movement
+            if (playerController != null)
+                playerController.SetNewTarget(playerPivot.position);
+        }
+
+        // Teleport camera (if assigned)
         if (mainCamera != null && cameraPivot != null)
         {
             Vector3 camPos = mainCamera.transform.position;
@@ -83,14 +68,8 @@ public class Teleport : MonoBehaviour
             mainCamera.transform.position = camPos;
         }
 
-        // Stop player movement immediately
-        if (playerController != null)
-        {
-            playerController.Direction = Vector3.zero;
-            playerController.SetNewTarget(teleportPivot.position);
-        }
-
-        // Hide tooltip after teleport
-        ToooltipManager._Instance.HideTooltip();
+        // Hide tooltip if present
+        if (ToooltipManager._Instance != null)
+            ToooltipManager._Instance.HideTooltip();
     }
 }
