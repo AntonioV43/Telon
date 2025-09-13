@@ -44,23 +44,32 @@ public class Flashlight : MonoBehaviour
 
             bool isLit = false;
 
-            // ✅ Check flashlight cone
-            Vector2 dirToObj = obj.transform.position - flashlightPivot.position;
-            float angleToObj = Vector2.Angle(flashlightPivot.up, dirToObj);
+            // ✅ Get all 4 corners of the sprite bounds
+            Bounds b = sr.bounds;
+            Vector3[] points = new Vector3[4];
+            points[0] = b.min; // bottom-left
+            points[1] = new Vector3(b.min.x, b.max.y, b.min.z); // top-left
+            points[2] = new Vector3(b.max.x, b.min.y, b.min.z); // bottom-right
+            points[3] = b.max; // top-right
 
-            if (angleToObj < flashlightLight.pointLightOuterAngle / 2 &&
-                dirToObj.magnitude <= flashlightLight.pointLightOuterRadius)
+            foreach (var p in points)
             {
-                isLit = true;
+                Vector2 dirToPoint = p - flashlightPivot.position;
+                float angleToPoint = Vector2.Angle(flashlightPivot.up, dirToPoint);
+
+                if (angleToPoint < flashlightLight.pointLightOuterAngle / 2 &&
+                    dirToPoint.magnitude <= flashlightLight.pointLightOuterRadius)
+                {
+                    isLit = true;
+                    break; // ✅ At least one corner is lit → reveal the whole sprite
+                }
             }
 
-            // ✅ Extra check: touching player collider
+            // ✅ Extra: if touching player, always visible
             if (!isLit && playerCollider != null && obj.IsTouching(playerCollider))
-            {
                 isLit = true;
-            }
 
-            // Fade in/out
+            // Fade in/out smoothly
             Color c = sr.color;
             float targetAlpha = isLit ? 1f : 0f;
             c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * fadeSpeed);

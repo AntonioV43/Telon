@@ -1,10 +1,13 @@
 using UnityEngine;
+using System;
 
 public class StatManager : MonoBehaviour
 {
     [Header("Stats")]
     public int maxHealth = 100;
     public int currentHealth;
+
+    public event Action OnDeath;
 
     private void Awake()
     {
@@ -35,6 +38,12 @@ public class StatManager : MonoBehaviour
     private void Die()
     {
         Debug.Log($"{gameObject.name} has died!");
-        // You can expand with death animation, disable, etc.
+        OnDeath?.Invoke();
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        Debug.Log($"{gameObject.name} health reset: {currentHealth}/{maxHealth}");
     }
 }
